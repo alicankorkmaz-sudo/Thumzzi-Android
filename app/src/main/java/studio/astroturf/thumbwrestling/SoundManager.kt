@@ -8,16 +8,20 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 
-class SoundManager(context: Context) {
-    private val soundPool = SoundPool.Builder()
-        .setMaxStreams(4)
-        .setAudioAttributes(
-            AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_GAME)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-        )
-        .build()
+class SoundManager(
+    context: Context,
+) {
+    private val soundPool =
+        SoundPool
+            .Builder()
+            .setMaxStreams(4)
+            .setAudioAttributes(
+                AudioAttributes
+                    .Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build(),
+            ).build()
 
     private val soundHit = soundPool.load(context, R.raw.hit, 1)
     private val soundCombo = soundPool.load(context, R.raw.combo, 2)

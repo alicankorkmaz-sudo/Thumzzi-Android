@@ -7,16 +7,18 @@ plugins {
 }
 
 // Local.properties'i okumak için
-val localProperties = Properties().apply {
-    val localPropertiesFile = rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        load(localPropertiesFile.inputStream())
+val localProperties =
+    Properties().apply {
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            load(localPropertiesFile.inputStream())
+        }
     }
-}
 
-fun getLocalProperty(key: String, defaultValue: String = ""): String {
-    return localProperties.getProperty(key, System.getenv(key) ?: defaultValue)
-}
+fun getLocalProperty(
+    key: String,
+    defaultValue: String = "",
+): String = localProperties.getProperty(key, System.getenv(key) ?: defaultValue)
 
 android {
     namespace = "studio.astroturf.thumbwrestling"
@@ -47,7 +49,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
             signingConfig = signingConfigs.getByName("release")
         }
@@ -57,17 +59,19 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    
+
     kotlinOptions {
         jvmTarget = "11"
     }
-    
+
     buildFeatures {
         compose = true
     }
-    
+
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+        kotlinCompilerExtensionVersion =
+            libs.versions.compose.compiler
+                .get()
     }
 
     packaging {
