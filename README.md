@@ -1,4 +1,4 @@
-# Thumb Wrestling
+# Thummzi
 
 A two-player mobile game where players compete in a thumb wrestling match on a single device.
 
@@ -21,5 +21,13 @@ To build the project, you'll need:
 - JDK 11 or newer
 - Android SDK 34
 
-### Release Build
-For release builds, you'll need to provide the following signing configuration in your `local.properties`: 
+The release keystore file should be placed at `app/release.keystore`
+
+## Privacy Policy
+Our privacy policy can be found [here](https://alicankorkmaz-sudo.github.io/Thummzi/privacy-policy).
+
+## Contact
+For business inquiries:
+- Email: admin@astroturf.studio
+
+© 2024 Astroturf Studio. All rights reserved.

@@ -26,6 +26,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="privacy_policy_url"
+            android:value="https://[your-github-username].github.io/ThumbWrestling/privacy-policy" />
     </application>
 
 </manifest>
