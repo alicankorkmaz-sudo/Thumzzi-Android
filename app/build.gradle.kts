@@ -36,10 +36,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(getLocalProperty("KEYSTORE_FILE"))
-            storePassword = getLocalProperty("KEYSTORE_PASSWORD")
-            keyAlias = getLocalProperty("KEY_ALIAS")
-            keyPassword = getLocalProperty("KEY_PASSWORD")
+            storeFile = file("release.keystore")
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
+            keyPassword = System.getenv("KEY_PASSWORD")
         }
     }
 
