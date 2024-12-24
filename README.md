@@ -24,7 +24,7 @@ To build the project, you'll need:
 The release keystore file should be placed at `app/release.keystore`
 
 ## Privacy Policy
-Our privacy policy can be found [here](https://alicankorkmaz-sudo.github.io/Thummzi/privacy-policy).
+Our privacy policy can be found [here](https://alicankorkmaz-sudo.github.io/Thummzi/privacy-policy.html).
 
 ## Contact
 For business inquiries:

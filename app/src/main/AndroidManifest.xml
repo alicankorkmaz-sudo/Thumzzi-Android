@@ -28,7 +28,7 @@
         </activity>
         <meta-data
             android:name="privacy_policy_url"
-            android:value="https://[your-github-username].github.io/ThumbWrestling/privacy-policy" />
+            android:value="https://alicankorkmaz-sudo.github.io/Thummzi/privacy-policy.html" />
     </application>
 
 </manifest>
