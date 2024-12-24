@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 class GameViewModel : ViewModel() {
     data class PlayerState(
@@ -29,6 +31,14 @@ class GameViewModel : ViewModel() {
 
     private val comboTimeWindow = 2000L
     private val comboHealthBonus = 1
+
+    // Add events for sound coordination
+    sealed class GameEvent {
+        object ComboAchieved : GameEvent()
+    }
+
+    private val _events = MutableSharedFlow<GameEvent>()
+    val events = _events.asSharedFlow()
 
     init {
         startGame()
@@ -86,6 +96,8 @@ class GameViewModel : ViewModel() {
 
             // Combo bonusu kontrolü - vuran oyuncuya can ekle
             val bonusHealth = if (newCombo > 0 && newCombo % 3 == 0) {
+                // Trigger combo event
+                _events.tryEmit(GameEvent.ComboAchieved)
                 comboHealthBonus
             } else {
                 0

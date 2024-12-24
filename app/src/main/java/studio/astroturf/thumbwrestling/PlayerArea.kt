@@ -21,6 +21,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.random.Random
+import android.view.HapticFeedbackConstants
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalView
 
 @Composable
 fun PlayerArea(
@@ -30,6 +36,19 @@ fun PlayerArea(
     val viewModel: GameViewModel = viewModel()
     val gameState by viewModel.gameState.collectAsState()
     val playerState = if (isRightPlayer) gameState.player2 else gameState.player1
+    val soundManager = rememberSoundManager()
+    val view = LocalView.current
+    
+    var showParticles by remember { mutableStateOf(false) }
+    var particlePosition by remember { mutableStateOf(Offset.Zero) }
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is GameViewModel.GameEvent.ComboAchieved -> soundManager.playComboSound()
+            }
+        }
+    }
 
     Box(
         modifier = modifier.padding(16.dp)
@@ -78,7 +97,16 @@ fun PlayerArea(
                 }
                 
                 Button(
-                    onClick = { viewModel.onButtonClick(isRightPlayer) },
+                    onClick = { 
+                        viewModel.onButtonClick(isRightPlayer)
+                        soundManager.playHitSound()
+                        view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        showParticles = true
+                        particlePosition = Offset(
+                            Random.nextInt(0, 200).toFloat(),
+                            Random.nextInt(50, 300).toFloat()
+                        )
+                    },
                     modifier = Modifier
                         .then(randomPosition)
                         .size(80.dp)
@@ -95,8 +123,23 @@ fun PlayerArea(
             }
         }
 
+        // Particle effect
+        if (showParticles) {
+            HitParticleEffect(
+                position = particlePosition,
+                onFinish = { showParticles = false }
+            )
+        }
+
         // Game over message and restart button - center
         if (gameState.gameOver) {
+            // Sadece kazanan oyuncunun tarafında ses çal
+            LaunchedEffect(Unit) {
+                if (gameState.winner == (if (isRightPlayer) 2 else 1)) {
+                    soundManager.playWinSound()
+                }
+            }
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.align(Alignment.Center)
