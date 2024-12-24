@@ -43,12 +43,22 @@ fun PlayerArea(
     var particlePosition by remember { mutableStateOf(Offset.Zero) }
 
     LaunchedEffect(Unit) {
+        println("Starting to collect events") // Debug log
         viewModel.events.collect { event ->
+            println("Received event: $event") // Debug log
             when (event) {
-                is GameViewModel.GameEvent.ComboAchieved -> soundManager.playComboSound()
+                GameViewModel.GameEvent.ComboAchieved -> {
+                    println("Playing combo sound from event") // Debug log
+                    soundManager.playComboSound()
+                }
             }
         }
     }
+
+    // Combo durumunu hesapla
+    val currentTime = System.currentTimeMillis()
+    val isComboActive = currentTime - playerState.lastHitTimestamp <= 2000L // 2000L GameViewModel'deki comboTimeWindow ile aynı olmalı
+    val displayCombo = if (isComboActive) playerState.comboCount else 0
 
     Box(
         modifier = modifier.padding(16.dp)
@@ -78,11 +88,15 @@ fun PlayerArea(
                 }
             }
 
-            // Combo counter - smaller text
+            // Updated combo counter
             Text(
-                text = "x${playerState.comboCount}",
+                text = "x$displayCombo",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                color = if (isComboActive && displayCombo > 0) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                }
             )
         }
 
@@ -99,8 +113,11 @@ fun PlayerArea(
                 Button(
                     onClick = { 
                         viewModel.onButtonClick(isRightPlayer)
+                        // Play hit sound
                         soundManager.playHitSound()
+                        // Trigger haptic feedback
                         view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        // Show particles
                         showParticles = true
                         particlePosition = Offset(
                             Random.nextInt(0, 200).toFloat(),

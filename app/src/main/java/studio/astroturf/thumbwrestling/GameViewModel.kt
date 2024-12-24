@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 
 class GameViewModel : ViewModel() {
     data class PlayerState(
@@ -37,8 +39,8 @@ class GameViewModel : ViewModel() {
         object ComboAchieved : GameEvent()
     }
 
-    private val _events = MutableSharedFlow<GameEvent>()
-    val events = _events.asSharedFlow()
+    private val _events = Channel<GameEvent>()
+    val events = _events.receiveAsFlow()
 
     init {
         startGame()
@@ -96,8 +98,10 @@ class GameViewModel : ViewModel() {
 
             // Combo bonusu kontrolü - vuran oyuncuya can ekle
             val bonusHealth = if (newCombo > 0 && newCombo % 3 == 0) {
-                // Trigger combo event
-                _events.tryEmit(GameEvent.ComboAchieved)
+                // Trigger combo event in a coroutine
+                viewModelScope.launch {
+                    _events.send(GameEvent.ComboAchieved)
+                }
                 comboHealthBonus
             } else {
                 0

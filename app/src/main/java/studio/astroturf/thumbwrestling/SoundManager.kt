@@ -29,6 +29,7 @@ class SoundManager(context: Context) {
     }
 
     fun playComboSound() {
+        println("Playing combo sound")
         soundPool.play(soundCombo, 1f, 1f, 1, 0, 1f)
     }
 
